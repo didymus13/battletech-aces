@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+import { Link, Links } from 'react-router'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -28,6 +29,10 @@ function App() {
         >
           Count is {count}. Click to increase.
         </button>
+      </section>
+
+      <section id="links">
+        <Link to="/profile">Go to Profile Page</Link>
       </section>
 
       <div className="ticks"></div>
