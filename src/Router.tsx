@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App.tsx'
-import ProfilePage from './profile/ProfilePage'
+import { CampaignListPage } from './campaigns/CampaignListPage.tsx'
 
 const Router = () => {
   const [queryClient] = React.useState(() => new QueryClient())
@@ -12,7 +12,7 @@ const Router = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/campaigns" element={<CampaignListPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
