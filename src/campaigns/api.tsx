@@ -1,11 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Campaign } from "./Campaign";
 
-const API_BASE_URL = 'http://localhost:8081';
-
 export const useCampaigns = () => {
   return useQuery<Campaign[]>({
     queryKey: ['campaigns'],
-    queryFn: () => fetch(`${API_BASE_URL}/api/1.0/campaigns`).then((res) => res.json()),
+    queryFn: async () => {
+      const response = await fetch('/api/1.0/campaigns');
+
+      if (response.status === 401) {
+        window.location.assign('/oauth2/authorization/spring');
+        throw new Error('Authentication required');
+      }
+
+      if (!response.ok) {
+        throw new Error(`Campaign request failed: ${response.status}`);
+      }
+
+      return response.json();
+    },
   });
 };
