@@ -1,3 +1,4 @@
+import { Link } from "react-router/internal/react-server-client";
 import { useCampaigns } from "./api";
 
 export const CampaignListPage = () => {
@@ -17,7 +18,7 @@ export const CampaignListPage = () => {
       <ul>
         {campaigns?.map((campaign) => (
           <li key={String(campaign.id)}>
-            {campaign.name} - Difficulty: {campaign.difficulty}
+            <Link to={`/campaigns/${campaign.id}`}>{campaign.name}</Link> - Difficulty: {campaign.difficulty}
           </li>
         ))}
       </ul>

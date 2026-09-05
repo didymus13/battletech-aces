@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Campaign } from "./Campaign";
 
+const LOGIN_REDIRECT_KEY = 'postLoginRedirect';
+
 export const useCampaigns = () => {
   return useQuery<Campaign[]>({
     queryKey: ['campaigns'],
@@ -8,7 +10,13 @@ export const useCampaigns = () => {
       const response = await fetch('/api/1.0/campaigns');
 
       if (response.status === 401) {
-        window.location.assign('/oauth2/authorization/spring');
+        if (!sessionStorage.getItem(LOGIN_REDIRECT_KEY)) {
+          sessionStorage.setItem(
+            LOGIN_REDIRECT_KEY,
+            window.location.pathname + window.location.search + window.location.hash,
+          );
+          window.location.assign('/oauth2/authorization/spring');
+        }
         throw new Error('Authentication required');
       }
 
@@ -16,6 +24,7 @@ export const useCampaigns = () => {
         throw new Error(`Campaign request failed: ${response.status}`);
       }
 
+      sessionStorage.removeItem(LOGIN_REDIRECT_KEY);
       return response.json();
     },
   });
