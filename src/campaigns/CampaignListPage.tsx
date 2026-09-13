@@ -1,8 +1,12 @@
-import { Link } from "react-router/internal/react-server-client";
-import { useCampaigns } from "./api";
+import { useQuery } from "@tanstack/react-query";
+import type { Campaign } from "./Campaign";
+import { Link } from "react-router";
 
 export const CampaignListPage = () => {
-  const { data: campaigns, isLoading, error } = useCampaigns();
+  const { data: campaigns, isLoading, error } = useQuery<Campaign[]>({
+    queryKey: ["campaigns"],
+    queryFn: () => fetch("/api/1.0/campaigns").then((res) => res.json())
+  });
 
   if (isLoading) {
     return <div>Loading campaigns...</div>;
