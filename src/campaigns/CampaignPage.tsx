@@ -1,13 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import type { Campaign } from "./Campaign";
+import { apiFetch } from "../api";
 
 const CampaignPage = () => {
   const { id } = useParams<{ id: string }>();
   
   const { data: campaign, isLoading, error } = useQuery<Campaign>({
     queryKey: ['campaign', id],
-    queryFn: () => fetch(`/api/1.0/campaigns/${id}`).then(res => res.json()),
+    queryFn: () => apiFetch(`/api/1.0/campaigns/${id}`).then(res => res.json()),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 

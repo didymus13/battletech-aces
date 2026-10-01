@@ -1,3 +1,16 @@
+export interface _links {
+    [key: string]: {
+        href: string
+    }
+}
+
+export interface CollectionResponse<T> {
+    _embedded: {
+        [key: string]: T[]
+    },
+    _links: _links,
+}
+
 export interface Campaign {
     id: number,
     name: string,
@@ -6,6 +19,7 @@ export interface Campaign {
     pilots: Pilot[],
     sorties: Sortie[],
     difficulty: "ROOKIE" | "STANDARD" | "VETERAN" | "ELITE" | "LEGENDARY",
+    _links: _links
 };
 
 export interface Battlemech {

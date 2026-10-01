@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import type { Campaign } from "./Campaign";
+import type { Campaign, CollectionResponse } from "./Campaign";
 import { Link } from "react-router";
+import { apiFetch } from "../api";
 
 export const CampaignListPage = () => {
-  const { data: campaigns, isLoading, error } = useQuery<Campaign[]>({
+  const { data, isLoading, error } = useQuery<CollectionResponse<Campaign>>({
     queryKey: ["campaigns"],
-    queryFn: () => fetch("/api/1.0/campaigns").then((res) => res.json())
+    queryFn: () => apiFetch("/api/1.0/campaigns").then((res) => res.json())
   });
 
   if (isLoading) {
@@ -20,7 +21,7 @@ export const CampaignListPage = () => {
     <div>
       <h1>Campaign List</h1>
       <ul>
-        {campaigns?.map((campaign) => (
+        {data?._embedded?.campaigns?.map((campaign) => (
           <li key={String(campaign.id)}>
             <Link to={`/campaigns/${campaign.id}`}>{campaign.name}</Link> - Difficulty: {campaign.difficulty}
           </li>

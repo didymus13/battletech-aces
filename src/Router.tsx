@@ -4,16 +4,19 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App.tsx'
 import { CampaignListPage } from './campaigns/CampaignListPage.tsx'
 import CampaignPage from './campaigns/CampaignPage.tsx'
-
-const LOGIN_REDIRECT_KEY = 'postLoginRedirect';
+import { POST_LOGIN_REDIRECT_KEY } from './api.ts'
 
 const RestoreLoginPath = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const path = sessionStorage.getItem(LOGIN_REDIRECT_KEY);
+    const path = window.sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY);
     if (path && window.location.pathname === '/') {
-      navigate(path, { replace: true });
+      window.sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
+      const destination = new URL(path, window.location.origin);
+      if (path.startsWith('/') && destination.origin === window.location.origin) {
+        navigate(`${destination.pathname}${destination.search}${destination.hash}`, { replace: true });
+      }
     }
   }, [navigate]);
 
