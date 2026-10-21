@@ -19,6 +19,8 @@ export interface Campaign {
     pilots: Pilot[],
     sorties: Sortie[],
     difficulty: "ROOKIE" | "STANDARD" | "VETERAN" | "ELITE" | "LEGENDARY",
+    playerForceModifier: number,
+    spEarnedModifier: number,
     _links: _links
 };
 
@@ -36,13 +38,15 @@ export interface Pilot {
     callsign: string,
     type: string,
     skill: number,
-    skillCost: number,
+    skillCost: number | null,
     edgeTokens: number,
-    edgeTokenCost: number,
+    edgeTokenCost: number | null,
     edgeAbilities: string[],
-    edgeAbilityCost: number,
+    edgeAbilityCost: number | null,
     timesMvp: number,
     isWounded: Boolean,
+    isDead: boolean,
+    isCo: boolean,
 }
 
 export interface Sortie {

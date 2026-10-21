@@ -1,7 +1,47 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
-import type { Campaign } from "./Campaign";
+import type { Campaign, Pilot } from "./Campaign";
 import { apiFetch } from "../api";
+
+interface PilotListProps {
+  pilots: Pilot[];
+  showSp: boolean;
+  emptyMessage: string;
+}
+
+const PilotList = ({ pilots, showSp, emptyMessage }: PilotListProps) => (
+  <table className={showSp ? "pilot-list pilot-list-with-sp" : "pilot-list"}>
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        {showSp && <th scope="col">SP spent</th>}
+      </tr>
+    </thead>
+    <tbody>
+      {pilots.length === 0 ? (
+        <tr>
+          <td colSpan={showSp ? 2 : 1}>{emptyMessage}</td>
+        </tr>
+      ) : (
+        pilots.map((pilot) => (
+          <tr key={pilot.id}>
+            <td>
+              {pilot.callsign}
+              {pilot.isCo && !pilot.isDead && " (CO)"}
+            </td>
+            {showSp && (
+              <td>
+                {(pilot.skillCost ?? 0) +
+                  (pilot.edgeTokenCost ?? 0) +
+                  (pilot.edgeAbilityCost ?? 0)}
+              </td>
+            )}
+          </tr>
+        ))
+      )}
+    </tbody>
+  </table>
+);
 
 const CampaignPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,15 +64,81 @@ const CampaignPage = () => {
     return <div>Campaign not found</div>;
   }
 
+  const totalPv = campaign.mechs.reduce((total, mech) => {
+    const pv = Number(mech.pv);
+    return Number.isFinite(pv) ? total + pv : total;
+  }, 0);
+  const livingPilots = campaign.pilots.filter((pilot) => !pilot.isDead);
+  const deadPilots = campaign.pilots.filter((pilot) => pilot.isDead);
+
   return (
-    <div>
+    <main>
       <h1>{campaign.name}</h1>
-      <p>Difficulty: {campaign.difficulty}</p>
-      <p>Starting SP: {campaign.startingSp}</p>
-      <p>Pilots: {campaign.pilots.length}</p>
-      <p>Mechs: {campaign.mechs.length}</p>
-      <p>Sorties: {campaign.sorties.length}</p>
-    </div>
+      <section aria-labelledby="campaign-details-heading">
+        <h2 id="campaign-details-heading">Campaign details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Difficulty</th>
+              <th scope="col">Force PV modifier</th>
+              <th scope="col">SP modifier</th>
+              <th scope="col">Starting SP</th>
+              <th scope="col">Sorties</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{campaign.difficulty}</td>
+              <td>{campaign.playerForceModifier.toFixed(1)}x</td>
+              <td>{campaign.spEarnedModifier.toFixed(1)}x</td>
+              <td>{campaign.startingSp}</td>
+              <td>{campaign.sorties.length}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section aria-labelledby="units-heading">
+        <h2 id="units-heading">Units</h2>
+        <table className="mech-table">
+          <thead>
+            <tr>
+              <th scope="col">Unit</th>
+              <th scope="col">Model</th>
+              <th scope="col">PV</th>
+            </tr>
+          </thead>
+          <tbody>
+            {campaign.mechs.length === 0 ? (
+              <tr>
+                <td colSpan={3}>No units yet.</td>
+              </tr>
+            ) : (
+              campaign.mechs.map((mech) => (
+                <tr key={mech.id}>
+                  <td>{mech.name}</td>
+                  <td>{mech.model}</td>
+                  <td>{mech.pv}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row" colSpan={2}>Total PV</th>
+              <td>{totalPv}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+      <section aria-labelledby="living-pilots-heading">
+        <h2 id="living-pilots-heading">Living pilots</h2>
+        <PilotList pilots={livingPilots} showSp emptyMessage="No pilots available" />
+      </section>
+      <section aria-labelledby="dead-pilots-heading">
+        <h2 id="dead-pilots-heading">Dead pilots</h2>
+        <PilotList pilots={deadPilots} showSp={false} emptyMessage="No dead pilots." />
+      </section>
+    </main>
   );
 };
 

@@ -17,6 +17,26 @@
   }
 }
 
+.mech-table th,
+.mech-table td {
+  text-align: left;
+}
+
+.mech-table th:last-child,
+.mech-table td:last-child {
+  text-align: right;
+}
+
+.pilot-list th,
+.pilot-list td {
+  text-align: left;
+}
+
+.pilot-list-with-sp th:last-child,
+.pilot-list-with-sp td:last-child:not([colspan]) {
+  text-align: right;
+}
+
 .hero {
   position: relative;
 
