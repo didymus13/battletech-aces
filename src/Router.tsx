@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App.tsx'
 import { CampaignListPage } from './campaigns/CampaignListPage.tsx'
+import CampaignCreatePage from './campaigns/CampaignCreatePage.tsx'
 import CampaignPage from './campaigns/CampaignPage.tsx'
 import { POST_LOGIN_REDIRECT_KEY } from './api.ts'
 
@@ -33,6 +34,7 @@ const Router = () => {
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/campaigns" element={<CampaignListPage />} />
+          <Route path="/campaigns/new" element={<CampaignCreatePage />} />
           <Route path="/campaigns/:id" element={<CampaignPage />} />
         </Routes>
       </BrowserRouter>

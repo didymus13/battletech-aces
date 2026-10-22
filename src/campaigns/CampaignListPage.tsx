@@ -20,6 +20,7 @@ export const CampaignListPage = () => {
   return (
     <div>
       <h1>Campaign List</h1>
+      <Link to="/campaigns/new">Create campaign</Link>
       <ul>
         {data?._embedded?.campaigns?.map((campaign) => (
           <li key={String(campaign.id)}>
