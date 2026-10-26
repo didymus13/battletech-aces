@@ -44,7 +44,7 @@ export interface Pilot {
     edgeAbilities: string[],
     edgeAbilityCost: number | null,
     timesMvp: number,
-    isWounded: Boolean,
+    isWounded: boolean,
     isDead: boolean,
     isCo: boolean,
 }
@@ -52,10 +52,10 @@ export interface Pilot {
 export interface Sortie {
     id: number,
     campaignId: number,
-    datePlayed: Date,
+    datePlayed: string,
     scenarionumber: string,
     scenarioName: string,
-    isWin: Boolean,
+    isWin: boolean,
     primaryObjectiveSp: number,
     otherObjectiveSp: number,
     spModifier: number,

@@ -37,6 +37,16 @@
   text-align: right;
 }
 
+.sortie-list th,
+.sortie-list td {
+  text-align: left;
+}
+
+.sortie-list th:last-child,
+.sortie-list td:last-child:not([colspan]) {
+  text-align: right;
+}
+
 .hero {
   position: relative;
 

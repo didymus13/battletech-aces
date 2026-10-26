@@ -83,7 +83,6 @@ const CampaignPage = () => {
               <th scope="col">Force PV modifier</th>
               <th scope="col">SP modifier</th>
               <th scope="col">Starting SP</th>
-              <th scope="col">Sorties</th>
             </tr>
           </thead>
           <tbody>
@@ -92,13 +91,12 @@ const CampaignPage = () => {
               <td>{campaign.playerForceModifier.toFixed(1)}x</td>
               <td>{campaign.spEarnedModifier.toFixed(1)}x</td>
               <td>{campaign.startingSp}</td>
-              <td>{campaign.sorties.length}</td>
             </tr>
           </tbody>
         </table>
       </section>
       <section aria-labelledby="units-heading">
-        <h2 id="units-heading">Units</h2>
+        <h2 id="units-heading">Units ({campaign.mechs.length})</h2>
         <table className="mech-table">
           <thead>
             <tr>
@@ -131,12 +129,44 @@ const CampaignPage = () => {
         </table>
       </section>
       <section aria-labelledby="living-pilots-heading">
-        <h2 id="living-pilots-heading">Living pilots</h2>
+        <h2 id="living-pilots-heading">Living pilots ({livingPilots.length})</h2>
         <PilotList pilots={livingPilots} showSp emptyMessage="No pilots available" />
       </section>
       <section aria-labelledby="dead-pilots-heading">
-        <h2 id="dead-pilots-heading">Dead pilots</h2>
+        <h2 id="dead-pilots-heading">Dead pilots ({deadPilots.length})</h2>
         <PilotList pilots={deadPilots} showSp={false} emptyMessage="No dead pilots." />
+      </section>
+      <section aria-labelledby="sorties-heading">
+        <h2 id="sorties-heading">Sorties ({campaign.sorties.length})</h2>
+        <table className="sortie-list">
+          <thead>
+            <tr>
+              <th scope="col">Date played</th>
+              <th scope="col">Scenario</th>
+              <th scope="col">Win</th>
+              <th scope="col">Earning</th>
+            </tr>
+          </thead>
+          <tbody>
+            {campaign.sorties.length === 0 ? (
+              <tr>
+                <td colSpan={4}>No sorties yet.</td>
+              </tr>
+            ) : (
+              campaign.sorties.map((sortie) => {
+                const playedDate = new Date(sortie.datePlayed);
+                return (
+                  <tr key={sortie.id}>
+                    <td>{Number.isNaN(playedDate.getTime()) ? sortie.datePlayed : playedDate.toLocaleDateString()}</td>
+                    <td>{sortie.scenarioName}</td>
+                    <td>{sortie.isWin ? "Yes" : "No"}</td>
+                    <td>{sortie.earning}</td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </section>
     </main>
   );
