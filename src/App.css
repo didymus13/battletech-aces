@@ -21,7 +21,10 @@
 .mech-table td {
   text-align: left;
 }
-
+.mech-table th:nth-last-child(2),
+.mech-table td:nth-last-child(2) {
+  text-align: right;
+}
 .mech-table th:last-child,
 .mech-table td:last-child {
   text-align: right;
@@ -46,7 +49,22 @@
 .sortie-list td:last-child:not([colspan]) {
   text-align: right;
 }
+.mech-form {
+  display: grid;
+  grid-template-columns: max-content minmax(120px, 1fr);
+  gap: 8px 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
 
+.mech-form button {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.mech-form span[role="alert"] {
+  grid-column: 2;
+}
 .hero {
   position: relative;
 
