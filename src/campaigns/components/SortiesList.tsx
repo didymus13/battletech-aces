@@ -159,10 +159,9 @@ const SortiesList = ({ campaignId, sorties }: SortiesListProps) => {
               </tr>
             ) : (
               sorties.map((sortie) => {
-                const playedDate = new Date(sortie.datePlayed);
                 return (
                   <tr key={sortie.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
-                    <td className="px-4 py-3 text-left">{Number.isNaN(playedDate.getTime()) ? sortie.datePlayed : playedDate.toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-left">{sortie.datePlayed}</td>
                     <td className="px-4 py-3 text-left">{sortie.scenarioName}</td>
                     <td className="px-4 py-3 text-left">{sortie.isWin ? "Yes" : "No"}</td>
                     <td className="px-4 py-3 text-right tabular-nums">{sortie.earning}</td>
