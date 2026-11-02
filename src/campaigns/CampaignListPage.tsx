@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import type { Campaign, CollectionResponse } from "./Campaign";
+import type { CampaignListItem, CollectionResponse } from "./Campaign";
 import { Link } from "react-router";
 import { apiFetch } from "../api";
 
 export const CampaignListPage = () => {
-  const { data, isLoading, error } = useQuery<CollectionResponse<Campaign>>({
+  const { data, isLoading, error } = useQuery<CollectionResponse<CampaignListItem>>({
     queryKey: ["campaigns"],
     queryFn: () => apiFetch("/api/1.0/campaigns").then((res) => res.json())
   });
@@ -46,14 +46,37 @@ export const CampaignListPage = () => {
           {data?._embedded?.campaigns?.length ? (
             <ul className="divide-y divide-slate-200">
               {data._embedded.campaigns.map((campaign) => (
-                <li className="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between" key={String(campaign.id)}>
+                <li className="space-y-4 px-5 py-4" key={String(campaign.id)}>
                   <Link
                     className="font-semibold text-sky-800 hover:text-sky-950 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700"
                     to={`/campaigns/${campaign.id}`}
                   >
                     {campaign.name}
                   </Link>
-                  <span className="text-sm text-slate-600">Difficulty: {campaign.difficulty}</span>
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-4">
+                    <div>
+                      <dt className="text-slate-500">Living pilots</dt>
+                      <dd className="mt-1 font-medium tabular-nums text-slate-900">{campaign.livingPilotCount}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-slate-500">Battlemechs</dt>
+                      <dd className="mt-1 font-medium tabular-nums text-slate-900">{campaign.battlemechCount}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-slate-500">Current SP</dt>
+                      <dd className="mt-1 font-medium tabular-nums text-slate-900">{campaign.currentSp ?? "Not available"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-slate-500">Last sortie</dt>
+                      <dd className="mt-1 font-medium text-slate-900">
+                        {campaign.lastSortieDate ? (
+                          <time dateTime={campaign.lastSortieDate}>
+                            {new Date(`${campaign.lastSortieDate}T00:00:00`).toLocaleDateString()}
+                          </time>
+                        ) : "None"}
+                      </dd>
+                    </div>
+                  </dl>
                 </li>
               ))}
             </ul>

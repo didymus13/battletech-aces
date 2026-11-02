@@ -24,6 +24,16 @@ export interface Campaign {
     _links: _links
 };
 
+export interface CampaignListItem {
+    id: number,
+    name: string,
+    livingPilotCount: number,
+    battlemechCount: number,
+    currentSp: number | null,
+    lastSortieDate: string | null,
+    _links: _links
+}
+
 export interface Battlemech {
     id: number,
     campaignId: number,
