@@ -131,10 +131,13 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
   return (
     <>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm text-slate-800">
+        <table className={`w-full ${showSp ? "min-w-[760px]" : ""} border-collapse text-sm text-slate-800`}>
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50 text-slate-600">
               <th className="px-4 py-3 text-left font-semibold" scope="col">Name</th>
+              {showSp && <th className="px-4 py-3 text-right font-semibold" scope="col">Skill</th>}
+              {showSp && <th className="px-4 py-3 text-right font-semibold" scope="col">Edge tokens</th>}
+              {showSp && <th className="px-4 py-3 text-left font-semibold" scope="col">Edge abilities</th>}
               {showSp && <th className="px-4 py-3 text-right font-semibold" scope="col">SP spent</th>}
               <th className="px-4 py-3 text-right font-semibold" scope="col">Action</th>
             </tr>
@@ -142,7 +145,7 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
           <tbody>
             {pilots.length === 0 ? (
               <tr className="border-b border-slate-100">
-                <td className="px-4 py-3 text-slate-500" colSpan={showSp ? 3 : 2}>{emptyMessage}</td>
+                <td className="px-4 py-3 text-slate-500" colSpan={showSp ? 6 : 2}>{emptyMessage}</td>
               </tr>
             ) : (
               pilots.map((pilot) => {
@@ -164,6 +167,9 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
                         {pilot.callsign}
                         {pilot.isCo && !pilot.isDead && <span className="ml-1 font-medium text-slate-500">(CO)</span>}
                       </td>
+                      {showSp && <td className="px-4 py-3 text-right tabular-nums">{pilot.skill}</td>}
+                      {showSp && <td className="px-4 py-3 text-right tabular-nums">{pilot.edgeTokens}</td>}
+                      {showSp && <td className="max-w-64 break-words px-4 py-3 text-left">{pilot.edgeAbilities?.join(", ") || "-"}</td>}
                       {showSp && (
                         <td className="px-4 py-3 text-right tabular-nums">
                           {(pilot.skillCost ?? 0) +
@@ -210,7 +216,7 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
                     </tr>
                     {isEditing && values && (
                       <tr className="border-b border-slate-200 bg-slate-50">
-                        <td className="px-4 py-4" colSpan={showSp ? 3 : 2}>
+                        <td className="px-4 py-4" colSpan={showSp ? 6 : 2}>
                           <form
                             className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
                             onSubmit={(event) => {
