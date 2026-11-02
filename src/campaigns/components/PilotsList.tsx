@@ -149,7 +149,7 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
               </tr>
             ) : (
               pilots.map((pilot) => {
-                const isEditing = editingPilot?.id === pilot.id;
+                const isEditing = !pilot.isDead && editingPilot?.id === pilot.id;
                 const values = editingPilot?.values;
                 const canSave = values !== undefined &&
                   values.callsign.trim() !== "" &&
@@ -205,7 +205,7 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
                               {pilot.isDead ? "Revive" : "Mark dead"}
                             </button>
                           )}
-                          {campaignId !== undefined && !isEditing && (
+                          {campaignId !== undefined && !isEditing && !pilot.isDead && (
                             <button
                               className="rounded-md border border-slate-300 px-2.5 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-100"
                               type="button"
