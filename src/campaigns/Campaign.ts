@@ -19,8 +19,20 @@ export interface Campaign {
     pilots: Pilot[],
     sorties: Sortie[],
     difficulty: "ROOKIE" | "STANDARD" | "VETERAN" | "ELITE" | "LEGENDARY",
+    playerForceModifier: number,
+    spEarnedModifier: number,
     _links: _links
 };
+
+export interface CampaignListItem {
+    id: number,
+    name: string,
+    livingPilotCount: number,
+    battlemechCount: number,
+    currentSp: number | null,
+    lastSortieDate: string | null,
+    _links: _links
+}
 
 export interface Battlemech {
     id: number,
@@ -36,22 +48,24 @@ export interface Pilot {
     callsign: string,
     type: string,
     skill: number,
-    skillCost: number,
+    skillCost: number | null,
     edgeTokens: number,
-    edgeTokenCost: number,
+    edgeTokenCost: number | null,
     edgeAbilities: string[],
-    edgeAbilityCost: number,
+    edgeAbilityCost: number | null,
     timesMvp: number,
-    isWounded: Boolean,
+    isWounded: boolean,
+    isDead: boolean,
+    isCo: boolean,
 }
 
 export interface Sortie {
     id: number,
     campaignId: number,
-    datePlayed: Date,
-    scenarionumber: string,
+    datePlayed: string,
+    scenarioNumber: string,
     scenarioName: string,
-    isWin: Boolean,
+    isWin: boolean,
     primaryObjectiveSp: number,
     otherObjectiveSp: number,
     spModifier: number,
