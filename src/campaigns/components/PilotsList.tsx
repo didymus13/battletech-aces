@@ -179,6 +179,19 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
                       )}
                       <td className="px-4 py-3 text-right">
                         <div className="flex justify-end gap-2">
+                          {campaignId !== undefined && !isEditing && !pilot.isDead && (
+                            <button
+                              className="rounded-md border border-slate-300 px-2.5 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                              type="button"
+                              disabled={updatePilot.isPending}
+                              onClick={() => updatePilot.mutate({
+                                pilot,
+                                values: { ...pilotToFormValues(pilot), isWounded: !pilot.isWounded },
+                              })}
+                            >
+                              {pilot.isWounded ? "Recover" : "Mark wounded"}
+                            </button>
+                          )}
                           {campaignId !== undefined && !isEditing && (
                             <button
                               className="rounded-md border border-slate-300 px-2.5 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"

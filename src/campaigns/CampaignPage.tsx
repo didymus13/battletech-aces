@@ -26,7 +26,8 @@ const CampaignPage = () => {
     return <div>Campaign not found</div>;
   }
 
-  const livingPilots = campaign.pilots.filter((pilot) => !pilot.isDead);
+  const livingPilots = campaign.pilots.filter((pilot) => !pilot.isDead && !pilot.isWounded);
+  const woundedPilots = campaign.pilots.filter((pilot) => !pilot.isDead && pilot.isWounded);
   const deadPilots = campaign.pilots.filter((pilot) => pilot.isDead);
 
   return (
@@ -63,6 +64,11 @@ const CampaignPage = () => {
         <section className="rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="living-pilots-heading">
           <h2 id="living-pilots-heading" className="border-b border-slate-200 px-5 py-4 text-lg font-semibold">Living pilots ({livingPilots.length})</h2>
           <PilotList pilots={livingPilots} showSp emptyMessage="No pilots available" campaignId={campaign.id} allowCreate />
+        </section>
+
+        <section className="rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="wounded-pilots-heading">
+          <h2 id="wounded-pilots-heading" className="border-b border-slate-200 px-5 py-4 text-lg font-semibold">Wounded pilots ({woundedPilots.length})</h2>
+          <PilotList pilots={woundedPilots} showSp emptyMessage="No wounded pilots." campaignId={campaign.id} />
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="dead-pilots-heading">
