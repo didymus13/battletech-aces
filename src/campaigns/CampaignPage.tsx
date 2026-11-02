@@ -78,7 +78,7 @@ const CampaignPage = () => {
 
         <section className="rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="sorties-heading">
           <h2 id="sorties-heading" className="border-b border-slate-200 px-5 py-4 text-lg font-semibold">Sorties ({campaign.sorties.length})</h2>
-          <SortiesList sorties={campaign.sorties} />
+          <SortiesList sorties={campaign.sorties} campaignId={campaign.id} />
         </section>
       </div>
     </main>

@@ -53,7 +53,7 @@ export interface Sortie {
     id: number,
     campaignId: number,
     datePlayed: string,
-    scenarionumber: string,
+    scenarioNumber: string,
     scenarioName: string,
     isWin: boolean,
     primaryObjectiveSp: number,
