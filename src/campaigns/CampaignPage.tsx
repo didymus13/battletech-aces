@@ -1,50 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
-import type { Campaign, Pilot } from "./Campaign";
+import type { Campaign } from "./Campaign";
 import { apiFetch } from "../api";
 import BattlemechList from "./components/BattlemechList";
-
-interface PilotListProps {
-  pilots: Pilot[];
-  showSp: boolean;
-  emptyMessage: string;
-}
-
-const PilotList = ({ pilots, showSp, emptyMessage }: PilotListProps) => (
-  <div className="overflow-x-auto">
-    <table className="w-full border-collapse text-sm text-slate-800">
-      <thead>
-        <tr className="border-b border-slate-200 bg-slate-50 text-slate-600">
-          <th className="px-4 py-3 text-left font-semibold" scope="col">Name</th>
-          {showSp && <th className="px-4 py-3 text-right font-semibold" scope="col">SP spent</th>}
-        </tr>
-      </thead>
-      <tbody>
-        {pilots.length === 0 ? (
-          <tr className="border-b border-slate-100">
-            <td className="px-4 py-3 text-slate-500" colSpan={showSp ? 2 : 1}>{emptyMessage}</td>
-          </tr>
-        ) : (
-          pilots.map((pilot) => (
-            <tr key={pilot.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
-              <td className="px-4 py-3 text-left">
-                {pilot.callsign}
-                {pilot.isCo && !pilot.isDead && <span className="ml-1 font-medium text-slate-500">(CO)</span>}
-              </td>
-              {showSp && (
-                <td className="px-4 py-3 text-right tabular-nums">
-                  {(pilot.skillCost ?? 0) +
-                    (pilot.edgeTokenCost ?? 0) +
-                    (pilot.edgeAbilityCost ?? 0)}
-                </td>
-              )}
-            </tr>
-          ))
-        )}
-      </tbody>
-    </table>
-  </div>
-);
+import PilotList from "./components/PilotsList";
+import SortiesList from "./components/SortiesList";
 
 const CampaignPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -102,47 +62,17 @@ const CampaignPage = () => {
 
         <section className="rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="living-pilots-heading">
           <h2 id="living-pilots-heading" className="border-b border-slate-200 px-5 py-4 text-lg font-semibold">Living pilots ({livingPilots.length})</h2>
-          <PilotList pilots={livingPilots} showSp emptyMessage="No pilots available" />
+          <PilotList pilots={livingPilots} showSp emptyMessage="No pilots available" campaignId={campaign.id} allowCreate />
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="dead-pilots-heading">
           <h2 id="dead-pilots-heading" className="border-b border-slate-200 px-5 py-4 text-lg font-semibold">Dead pilots ({deadPilots.length})</h2>
-          <PilotList pilots={deadPilots} showSp={false} emptyMessage="No dead pilots." />
+          <PilotList pilots={deadPilots} showSp={false} emptyMessage="No dead pilots." campaignId={campaign.id} />
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="sorties-heading">
           <h2 id="sorties-heading" className="border-b border-slate-200 px-5 py-4 text-lg font-semibold">Sorties ({campaign.sorties.length})</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-sm text-slate-800">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-slate-600">
-                  <th className="px-4 py-3 text-left font-semibold" scope="col">Date played</th>
-                  <th className="px-4 py-3 text-left font-semibold" scope="col">Scenario</th>
-                  <th className="px-4 py-3 text-left font-semibold" scope="col">Win</th>
-                  <th className="px-4 py-3 text-right font-semibold" scope="col">Earning</th>
-                </tr>
-              </thead>
-              <tbody>
-                {campaign.sorties.length === 0 ? (
-                  <tr className="border-b border-slate-100">
-                    <td className="px-4 py-3 text-slate-500" colSpan={4}>No sorties yet.</td>
-                  </tr>
-                ) : (
-                  campaign.sorties.map((sortie) => {
-                    const playedDate = new Date(sortie.datePlayed);
-                    return (
-                      <tr key={sortie.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
-                        <td className="px-4 py-3 text-left">{Number.isNaN(playedDate.getTime()) ? sortie.datePlayed : playedDate.toLocaleDateString()}</td>
-                        <td className="px-4 py-3 text-left">{sortie.scenarioName}</td>
-                        <td className="px-4 py-3 text-left">{sortie.isWin ? "Yes" : "No"}</td>
-                        <td className="px-4 py-3 text-right tabular-nums">{sortie.earning}</td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+          <SortiesList sorties={campaign.sorties} />
         </section>
       </div>
     </main>

@@ -75,44 +75,6 @@ const BattlemechList = ({ campaignId, battlemechs }: BattlemechListProps) => {
   return (
     <section className="rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="units-heading">
       <h2 id="units-heading" className="border-b border-slate-200 px-5 py-4 text-lg font-semibold text-slate-900">Units ({battlemechs.length})</h2>
-      <form
-        className="grid gap-3 border-b border-slate-200 px-5 py-5 sm:grid-cols-[max-content_minmax(8rem,1fr)] sm:items-center"
-        onSubmit={handleSubmit((values) => createBattlemech.mutate(values))}
-      >
-        <label className="text-sm font-medium text-slate-700" htmlFor="mech-name">Name</label>
-        <input
-          className="min-h-10 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
-          id="mech-name"
-          {...register("name", { required: "Enter a unit name" })}
-          aria-invalid={Boolean(errors.name)}
-        />
-        <label className="text-sm font-medium text-slate-700" htmlFor="mech-model">Model</label>
-        <input
-          className="min-h-10 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
-          id="mech-model"
-          {...register("model", { required: "Enter a model" })}
-          aria-invalid={Boolean(errors.model)}
-        />
-        <label className="text-sm font-medium text-slate-700" htmlFor="mech-pv">PV</label>
-        <input
-          className="min-h-10 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
-          id="mech-pv"
-          type="number"
-          min="0"
-          {...register("pv", {
-            required: "Enter PV",
-            min: { value: 0, message: "PV cannot be negative" },
-          })}
-          aria-invalid={Boolean(errors.pv)}
-        />
-        <button className="mt-1 min-h-10 justify-self-start rounded-md bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50 sm:col-start-2" type="submit" disabled={createBattlemech.isPending}>
-          {createBattlemech.isPending ? "Adding..." : "Add unit"}
-        </button>
-        {errors.name && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.name.message}</span>}
-        {errors.model && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.model.message}</span>}
-        {errors.pv && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.pv.message}</span>}
-        {createBattlemech.error && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{createBattlemech.error.message}</span>}
-      </form>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[560px] border-collapse text-sm text-slate-800">
           <thead>
@@ -192,6 +154,45 @@ const BattlemechList = ({ campaignId, battlemechs }: BattlemechListProps) => {
           </tfoot>
         </table>
       </div>
+
+      <form
+        className="grid gap-3 border-b border-slate-200 px-5 py-5 sm:grid-cols-[max-content_minmax(8rem,1fr)] sm:items-center"
+        onSubmit={handleSubmit((values) => createBattlemech.mutate(values))}
+      >
+        <label className="text-sm font-medium text-slate-700" htmlFor="mech-name">Name</label>
+        <input
+          className="min-h-10 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
+          id="mech-name"
+          {...register("name", { required: "Enter a unit name" })}
+          aria-invalid={Boolean(errors.name)}
+        />
+        <label className="text-sm font-medium text-slate-700" htmlFor="mech-model">Model</label>
+        <input
+          className="min-h-10 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
+          id="mech-model"
+          {...register("model", { required: "Enter a model" })}
+          aria-invalid={Boolean(errors.model)}
+        />
+        <label className="text-sm font-medium text-slate-700" htmlFor="mech-pv">PV</label>
+        <input
+          className="min-h-10 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100"
+          id="mech-pv"
+          type="number"
+          min="0"
+          {...register("pv", {
+            required: "Enter PV",
+            min: { value: 0, message: "PV cannot be negative" },
+          })}
+          aria-invalid={Boolean(errors.pv)}
+        />
+        <button className="mt-1 min-h-10 justify-self-start rounded-md bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50 sm:col-start-2" type="submit" disabled={createBattlemech.isPending}>
+          {createBattlemech.isPending ? "Adding..." : "Add unit"}
+        </button>
+        {errors.name && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.name.message}</span>}
+        {errors.model && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.model.message}</span>}
+        {errors.pv && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.pv.message}</span>}
+        {createBattlemech.error && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{createBattlemech.error.message}</span>}
+      </form>
     </section>
   );
 };
