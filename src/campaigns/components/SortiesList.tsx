@@ -88,6 +88,7 @@ const SortiesList = ({ campaignId, sorties }: SortiesListProps) => {
     defaultValues: createEmptyValues(),
   });
   const [editingSortieId, setEditingSortieId] = useState<number | null>(null);
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
 
   const createSortie = useMutation({
     mutationFn: async (values: SortieFormValues) => {
@@ -101,6 +102,7 @@ const SortiesList = ({ campaignId, sorties }: SortiesListProps) => {
     },
     onSuccess: () => {
       reset(createEmptyValues());
+      setIsAddFormOpen(false);
       void queryClient.invalidateQueries({ queryKey: ["campaign"] });
     },
   });
@@ -134,7 +136,7 @@ const SortiesList = ({ campaignId, sorties }: SortiesListProps) => {
 
   const inputClassName = "min-h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100";
   const fieldLabelClassName = "grid gap-1.5 text-sm font-medium text-slate-700";
-  const mutationError = createSortie.error ?? updateSortie.error ?? deleteSortie.error;
+  const formMutationError = editingSortieId === null ? createSortie.error : updateSortie.error;
   const isSaving = createSortie.isPending || updateSortie.isPending;
 
   return (
@@ -170,6 +172,8 @@ const SortiesList = ({ campaignId, sorties }: SortiesListProps) => {
                           className="rounded-md border border-slate-300 px-2.5 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-100"
                           type="button"
                           onClick={() => {
+                            setIsAddFormOpen(false);
+                            updateSortie.reset();
                             setEditingSortieId(sortie.id);
                             reset(toFormValues(sortie));
                           }}
@@ -196,7 +200,24 @@ const SortiesList = ({ campaignId, sorties }: SortiesListProps) => {
         </table>
       </div>
 
-      <form
+      {deleteSortie.error && <p className="px-5 py-3 text-sm text-red-600" role="alert">{deleteSortie.error.message}</p>}
+      {editingSortieId === null && !isAddFormOpen && (
+        <div className="border-t border-slate-200 px-5 py-4">
+          <button
+            className="min-h-10 rounded-md bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800"
+            type="button"
+            onClick={() => {
+              reset(createEmptyValues());
+              createSortie.reset();
+              updateSortie.reset();
+              setIsAddFormOpen(true);
+            }}
+          >
+            Add sortie
+          </button>
+        </div>
+      )}
+      {(isAddFormOpen || editingSortieId !== null) && <form
         className="grid gap-5 border-t border-slate-200 px-5 py-5"
         onSubmit={handleSubmit((values) => {
           if (editingSortieId === null) createSortie.mutate(values);
@@ -250,7 +271,7 @@ const SortiesList = ({ campaignId, sorties }: SortiesListProps) => {
         {Object.keys(errors).length > 0 && (
           <p className="text-sm text-red-600" role="alert">Complete all required sortie fields.</p>
         )}
-        {mutationError && <p className="text-sm text-red-600" role="alert">{mutationError.message}</p>}
+        {formMutationError && <p className="text-sm text-red-600" role="alert">{formMutationError.message}</p>}
 
         <div className="flex flex-wrap gap-2">
           <button
@@ -260,20 +281,22 @@ const SortiesList = ({ campaignId, sorties }: SortiesListProps) => {
           >
             {isSaving ? "Saving..." : editingSortieId === null ? "Add sortie" : "Save sortie"}
           </button>
-          {editingSortieId !== null && (
-            <button
-              className="min-h-10 rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
-              type="button"
-              onClick={() => {
-                setEditingSortieId(null);
-                reset(createEmptyValues());
-              }}
-            >
-              Cancel
-            </button>
-          )}
+          <button
+            className="min-h-10 rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
+            type="button"
+            disabled={isSaving}
+            onClick={() => {
+              setEditingSortieId(null);
+              setIsAddFormOpen(false);
+              reset(createEmptyValues());
+              createSortie.reset();
+              updateSortie.reset();
+            }}
+          >
+            Cancel
+          </button>
         </div>
-      </form>
+      </form>}
     </div>
   );
 };

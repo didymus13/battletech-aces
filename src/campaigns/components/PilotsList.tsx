@@ -49,6 +49,7 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
   const queryClient = useQueryClient();
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PilotFormValues>();
   const [editingPilot, setEditingPilot] = useState<EditingPilot | null>(null);
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
 
   const createPilot = useMutation({
     mutationFn: async ({ callsign, skill, skillCost, edgeTokens, edgeTokenCost, edgeAbilities, edgeAbilityCost }: PilotFormValues) => {
@@ -77,6 +78,7 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
     },
     onSuccess: () => {
       reset();
+      setIsAddFormOpen(false);
       void queryClient.invalidateQueries({ queryKey: ["campaign"] });
     },
   });
@@ -318,7 +320,7 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
       {deletePilot.error && <p className="px-5 py-3 text-sm text-red-600" role="alert">{deletePilot.error.message}</p>}
       {updatePilot.error && <p className="px-5 py-3 text-sm text-red-600" role="alert">{updatePilot.error.message}</p>}
       {campaignId !== undefined && allowCreate && (
-        <form
+        isAddFormOpen ? <form
           className="grid gap-3 border-t border-slate-200 px-5 py-5 sm:grid-cols-[max-content_minmax(8rem,1fr)] sm:items-center"
           onSubmit={handleSubmit((values) => createPilot.mutate(values))}
         >
@@ -381,9 +383,23 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
             {...register("edgeAbilityCost", { required: "Enter a total edge ability cost", min: { value: 0, message: "Edge ability cost cannot be negative" } })}
             aria-invalid={Boolean(errors.edgeAbilityCost)}
           />
-          <button className="mt-1 min-h-10 justify-self-start rounded-md bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50 sm:col-start-2" type="submit" disabled={createPilot.isPending}>
-            {createPilot.isPending ? "Adding..." : "Add pilot"}
-          </button>
+          <div className="mt-1 flex gap-2 sm:col-start-2">
+            <button className="min-h-10 rounded-md bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50" type="submit" disabled={createPilot.isPending}>
+              {createPilot.isPending ? "Adding..." : "Add pilot"}
+            </button>
+            <button
+              className="min-h-10 rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
+              type="button"
+              disabled={createPilot.isPending}
+              onClick={() => {
+                reset();
+                createPilot.reset();
+                setIsAddFormOpen(false);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
           {errors.callsign && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.callsign.message}</span>}
           {errors.skill && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.skill.message}</span>}
           {errors.skillCost && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.skillCost.message}</span>}
@@ -391,7 +407,21 @@ const PilotList = ({ pilots, showSp, emptyMessage, campaignId, allowCreate = fal
           {errors.edgeTokenCost && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.edgeTokenCost.message}</span>}
           {errors.edgeAbilityCost && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.edgeAbilityCost.message}</span>}
           {createPilot.error && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{createPilot.error.message}</span>}
-        </form>
+        </form> : (
+          <div className="border-t border-slate-200 px-5 py-4">
+            <button
+              className="min-h-10 rounded-md bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800"
+              type="button"
+              onClick={() => {
+                reset();
+                createPilot.reset();
+                setIsAddFormOpen(true);
+              }}
+            >
+              Add pilot
+            </button>
+          </div>
+        )
       )}
     </>
   );

@@ -19,6 +19,7 @@ const BattlemechList = ({ campaignId, battlemechs }: BattlemechListProps) => {
   const queryClient = useQueryClient();
   const { register, handleSubmit, reset, formState: { errors } } = useForm<BattlemechFormValues>();
   const [editingMech, setEditingMech] = useState<BattlemechFormValues & { id: number } | null>(null);
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
 
   const createBattlemech = useMutation({
     mutationFn: async (values: BattlemechFormValues) => {
@@ -32,6 +33,7 @@ const BattlemechList = ({ campaignId, battlemechs }: BattlemechListProps) => {
     },
     onSuccess: () => {
       reset();
+      setIsAddFormOpen(false);
       void queryClient.invalidateQueries({ queryKey: ["campaign"] });
     },
   });
@@ -155,7 +157,7 @@ const BattlemechList = ({ campaignId, battlemechs }: BattlemechListProps) => {
         </table>
       </div>
 
-      <form
+      {isAddFormOpen ? <form
         className="grid gap-3 border-b border-slate-200 px-5 py-5 sm:grid-cols-[max-content_minmax(8rem,1fr)] sm:items-center"
         onSubmit={handleSubmit((values) => createBattlemech.mutate(values))}
       >
@@ -185,14 +187,42 @@ const BattlemechList = ({ campaignId, battlemechs }: BattlemechListProps) => {
           })}
           aria-invalid={Boolean(errors.pv)}
         />
-        <button className="mt-1 min-h-10 justify-self-start rounded-md bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50 sm:col-start-2" type="submit" disabled={createBattlemech.isPending}>
-          {createBattlemech.isPending ? "Adding..." : "Add unit"}
-        </button>
+        <div className="mt-1 flex gap-2 sm:col-start-2">
+          <button className="min-h-10 rounded-md bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50" type="submit" disabled={createBattlemech.isPending}>
+            {createBattlemech.isPending ? "Adding..." : "Add unit"}
+          </button>
+          <button
+            className="min-h-10 rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
+            type="button"
+            disabled={createBattlemech.isPending}
+            onClick={() => {
+              reset();
+              createBattlemech.reset();
+              setIsAddFormOpen(false);
+            }}
+          >
+            Cancel
+          </button>
+        </div>
         {errors.name && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.name.message}</span>}
         {errors.model && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.model.message}</span>}
         {errors.pv && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{errors.pv.message}</span>}
         {createBattlemech.error && <span className="text-sm text-red-600 sm:col-start-2" role="alert">{createBattlemech.error.message}</span>}
-      </form>
+      </form> : (
+        <div className="border-t border-slate-200 px-5 py-4">
+          <button
+            className="min-h-10 rounded-md bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800"
+            type="button"
+            onClick={() => {
+              reset();
+              createBattlemech.reset();
+              setIsAddFormOpen(true);
+            }}
+          >
+            Add unit
+          </button>
+        </div>
+      )}
     </section>
   );
 };
